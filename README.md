@@ -15,6 +15,17 @@ npm run deploy # deploy all stacks
 npm run cdk deploy <stack-name> # deploy a specific stack
 ```
 
+## Organization
+
+All the stacks can be **deployed independently, except for**:
+
+- `07-EventBridge`
+- `08-SQS`
+- `11-DynamoDBStreams`
+
+These stacks need stack `06-SES` to be deployed first (because they use the email identity created in stack `06-SES`).
+_You can work around this by deploying the SES identity directly from each stack, but be careful to not deploy it twice (it will fail)_
+
 ## AWS Billing
 
 🚨 Some resources deployed in this repository are not covered by the AWS Free Tier (but still cheap):
