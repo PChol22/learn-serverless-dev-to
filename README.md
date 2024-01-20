@@ -124,5 +124,5 @@ _For comparison, on my personal account, I pay **~1$/month** to keep all the res
 
 ### Part 17 - EventBridge Scheduler
 
-- 🗞 Article - Coming soon
+- 🗞 [Article](https://dev.to/slsbytheodo/learn-serverless-on-aws-step-by-step-schedule-tasks-with-eventbridge-scheduler-4cbh)
 - 💻 [Code](./lib/17-EventBridgeScheduler/stack.ts)
