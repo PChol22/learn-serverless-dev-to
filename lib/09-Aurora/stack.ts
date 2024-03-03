@@ -57,7 +57,23 @@ export class Part09AuroraStack extends Stack {
     });
 
     migrationsTable.grantReadWriteData(runMigrations);
-    cluster.grantDataApiAccess(runMigrations);
+    runMigrations.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+      actions: [
+        'rds-data:BatchExecuteStatement',
+        'rds-data:BeginTransaction',
+        'rds-data:CommitTransaction',
+        'rds-data:ExecuteStatement',
+        'rds-data:RollbackTransaction',
+      ],
+      resources: [cluster.clusterArn],
+    }));
+    runMigrations.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+      actions: [
+        'secretsmanager:GetSecretValue',
+        'secretsmanager:DescribeSecret'
+      ],
+      resources: [dbSecret.secretArn],
+    }));
 
     const addUser = new cdk.aws_lambda_nodejs.NodejsFunction(this, 'addUser', {
       entry: join(__dirname, 'addUser', 'handler.ts'),
@@ -73,7 +89,23 @@ export class Part09AuroraStack extends Stack {
       timeout: cdk.Duration.seconds(30),
     });
 
-    cluster.grantDataApiAccess(addUser);
+    addUser.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+      actions: [
+        'rds-data:BatchExecuteStatement',
+        'rds-data:BeginTransaction',
+        'rds-data:CommitTransaction',
+        'rds-data:ExecuteStatement',
+        'rds-data:RollbackTransaction',
+      ],
+      resources: [cluster.clusterArn],
+    }));
+    addUser.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+      actions: [
+        'secretsmanager:GetSecretValue',
+        'secretsmanager:DescribeSecret'
+      ],
+      resources: [dbSecret.secretArn],
+    }));
 
     const getUsers = new cdk.aws_lambda_nodejs.NodejsFunction(this, 'getUsers', {
       entry: join(__dirname, 'getUsers', 'handler.ts'),
@@ -89,7 +121,23 @@ export class Part09AuroraStack extends Stack {
       timeout: cdk.Duration.seconds(30),
     });
 
-    cluster.grantDataApiAccess(getUsers);
+    getUsers.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+      actions: [
+        'rds-data:BatchExecuteStatement',
+        'rds-data:BeginTransaction',
+        'rds-data:CommitTransaction',
+        'rds-data:ExecuteStatement',
+        'rds-data:RollbackTransaction',
+      ],
+      resources: [cluster.clusterArn],
+    }));
+    getUsers.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+      actions: [
+        'secretsmanager:GetSecretValue',
+        'secretsmanager:DescribeSecret'
+      ],
+      resources: [dbSecret.secretArn],
+    }));
 
     api.root.addResource('add-user').addMethod('POST', new cdk.aws_apigateway.LambdaIntegration(addUser)); 
     api.root.addResource('get-users').addMethod('GET', new cdk.aws_apigateway.LambdaIntegration(getUsers));
